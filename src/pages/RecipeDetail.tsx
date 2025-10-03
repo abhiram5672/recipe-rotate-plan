@@ -63,14 +63,14 @@ export default function RecipeDetail() {
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
-            className="text-primary hover:text-primary"
+            className="text-primary hover:text-primary hover:scale-105 transition-all"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Recipes
           </Button>
 
           <div className="flex gap-2">
-            <Button variant="outline" asChild>
+            <Button variant="outline" className="hover:scale-105 transition-all" asChild>
               <Link to={`/recipes/${recipe.id}/edit`}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit
@@ -78,7 +78,7 @@ export default function RecipeDetail() {
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="outline" className="text-destructive hover:text-destructive">
+                <Button variant="outline" className="text-destructive hover:text-destructive hover:scale-105 transition-all">
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete
                 </Button>
@@ -102,13 +102,16 @@ export default function RecipeDetail() {
         </div>
 
         <div className="mb-8">
-          <div className="mb-6 h-64 rounded-lg bg-gradient-primary" />
-          <h1 className="mb-2 text-3xl font-bold md:text-4xl">{recipe.name}</h1>
+          <div className="mb-6 h-64 rounded-2xl bg-gradient-cyber relative overflow-hidden glow-effect">
+            <div className="absolute inset-0 bg-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+          </div>
+          <h1 className="mb-2 text-3xl font-bold md:text-4xl bg-gradient-cyber bg-clip-text text-transparent">{recipe.name}</h1>
           <p className="text-lg text-muted-foreground">{recipe.description}</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Ingredients</CardTitle>
@@ -133,7 +136,7 @@ export default function RecipeDetail() {
 
               <div className="space-y-2">
                 {scaledIngredients.map(ing => (
-                  <div key={ing.id} className="flex justify-between border-b pb-2">
+                  <div key={ing.id} className="flex justify-between border-b border-primary/20 pb-2">
                     <span>{ing.name}</span>
                     <span className="font-medium text-primary">
                       {ing.quantity.toFixed(2)} {ing.unit}
@@ -144,7 +147,7 @@ export default function RecipeDetail() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-accent/20">
             <CardHeader>
               <CardTitle>Instructions</CardTitle>
             </CardHeader>
@@ -152,7 +155,7 @@ export default function RecipeDetail() {
               <ol className="space-y-3">
                 {recipe.instructions.split('\n').filter(step => step.trim()).map((step, index) => (
                   <li key={index} className="flex gap-3">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-primary text-sm font-semibold text-primary-foreground">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-cyber text-sm font-semibold text-white">
                       {index + 1}
                     </span>
                     <span className="pt-0.5">{step}</span>

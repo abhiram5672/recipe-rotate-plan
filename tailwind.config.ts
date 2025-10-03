@@ -23,6 +23,7 @@ export default {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           light: "hsl(var(--primary-light))",
+          glow: "hsl(var(--primary-glow))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -39,6 +40,7 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          purple: "hsl(var(--accent-purple))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -61,6 +63,8 @@ export default {
       },
       backgroundImage: {
         'gradient-primary': 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)))',
+        'gradient-accent': 'linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-purple)))',
+        'gradient-cyber': 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)',
       },
       borderRadius: {
         lg: "var(--radius)",

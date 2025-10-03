@@ -83,18 +83,18 @@ export default function RecipeForm() {
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
-          className="mb-6 text-primary hover:text-primary"
+          className="mb-6 text-primary hover:text-primary hover:scale-105 transition-all"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Recipes
         </Button>
 
-        <h1 className="mb-8 bg-gradient-primary bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
+        <h1 className="mb-8 bg-gradient-cyber bg-clip-text text-3xl font-bold text-transparent glow-text md:text-4xl">
           {isEditing ? 'Edit Recipe' : 'New Recipe'}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
               <CardTitle>Recipe Details</CardTitle>
             </CardHeader>
@@ -138,10 +138,10 @@ export default function RecipeForm() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-accent/20">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Ingredients</CardTitle>
-              <Button type="button" size="sm" onClick={addIngredient} className="bg-gradient-primary">
+              <Button type="button" size="sm" onClick={addIngredient} className="bg-gradient-cyber glow-effect hover:scale-105">
                 <Plus className="mr-2 h-4 w-4" />
                 Add
               </Button>
@@ -199,7 +199,7 @@ export default function RecipeForm() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-primary/20">
             <CardHeader>
               <CardTitle>Instructions</CardTitle>
             </CardHeader>
@@ -220,7 +220,7 @@ export default function RecipeForm() {
             <Button type="button" variant="outline" onClick={() => navigate('/')} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" className="flex-1 bg-gradient-primary hover:opacity-90">
+            <Button type="submit" className="flex-1 bg-gradient-cyber hover:opacity-90 hover:scale-105 glow-effect">
               {isEditing ? 'Update Recipe' : 'Save Recipe'}
             </Button>
           </div>

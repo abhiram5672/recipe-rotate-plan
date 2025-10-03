@@ -55,7 +55,7 @@ export default function MealPlanner() {
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
-          className="mb-6 text-primary hover:text-primary"
+          className="mb-6 text-primary hover:text-primary hover:scale-105 transition-all"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Recipes
@@ -63,23 +63,25 @@ export default function MealPlanner() {
 
         <div className="mb-8">
           <h1 className="mb-2 flex items-center gap-3 text-3xl font-bold md:text-4xl">
-            <CalendarDays className="h-8 w-8 text-primary" />
-            Weekly Meal Schedule
+            <div className="rounded-xl bg-gradient-cyber p-2 glow-effect">
+              <CalendarDays className="h-8 w-8 text-white" />
+            </div>
+            <span className="bg-gradient-cyber bg-clip-text text-transparent">Weekly Meal Schedule</span>
           </h1>
           <p className="text-lg text-muted-foreground">
             Plan your meals for the week. Enable rotation to automatically cycle through recipes.
           </p>
         </div>
 
-        <Card className="overflow-hidden">
-          <div className="bg-gradient-primary p-4">
+        <Card className="overflow-hidden border-primary/20">
+          <div className="bg-gradient-cyber p-4 glow-effect">
             <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2 text-sm font-medium text-primary-foreground">
+              <div className="flex items-center gap-2 text-sm font-medium text-white">
                 <CalendarDays className="h-5 w-5" />
                 <span className="hidden sm:inline">Weekly Meal Schedule</span>
                 <span className="sm:hidden">Schedule</span>
               </div>
-              <div className="flex flex-wrap items-center gap-3 text-sm text-primary-foreground">
+              <div className="flex flex-wrap items-center gap-3 text-sm text-white/90">
                 {MEAL_TYPES.map(type => (
                   <div key={type} className="flex items-center gap-1.5">
                     <span className="hidden sm:inline">{type}</span>
@@ -93,7 +95,7 @@ export default function MealPlanner() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b bg-muted/50">
+                <tr className="border-b border-primary/20 bg-muted/50">
                   <th className="p-3 text-left font-semibold">Day</th>
                   {MEAL_TYPES.map(type => (
                     <th key={type} className="min-w-[200px] p-3 text-left font-semibold">
@@ -104,7 +106,7 @@ export default function MealPlanner() {
               </thead>
               <tbody>
                 {DAYS.map(day => (
-                  <tr key={day} className="border-b transition-colors hover:bg-muted/30">
+                  <tr key={day} className="border-b border-primary/10 transition-colors hover:bg-primary/5">
                     <td className="p-3 font-medium">{day}</td>
                     {MEAL_TYPES.map(mealType => {
                       const recipeName = getRecipeName(day, mealType);
@@ -115,7 +117,7 @@ export default function MealPlanner() {
                           <div className="space-y-2">
                             <button
                               onClick={() => handleCellClick(day, mealType)}
-                              className="w-full rounded-md border border-dashed border-primary/30 p-3 text-left text-sm transition-all hover:border-primary hover:bg-primary/5"
+                              className="w-full rounded-xl border-2 border-dashed border-primary/30 bg-background/50 backdrop-blur-sm p-3 text-left text-sm transition-all hover:border-primary hover:bg-primary/5 hover:scale-105"
                             >
                               {recipeName || (
                                 <span className="text-muted-foreground">Click to add meal</span>
@@ -146,7 +148,7 @@ export default function MealPlanner() {
       </main>
 
       <Dialog open={!!selectedCell} onOpenChange={() => setSelectedCell(null)}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md border-primary/30">
           <DialogHeader>
             <DialogTitle>
               Select Recipe for {selectedCell?.day} - {selectedCell?.mealType}
@@ -169,7 +171,7 @@ export default function MealPlanner() {
               <Button
                 key={recipe.id}
                 variant="outline"
-                className="w-full justify-start hover:border-primary hover:bg-primary/5"
+                className="w-full justify-start hover:border-primary hover:bg-primary/5 hover:scale-105 transition-all"
                 onClick={() => handleSelectRecipe(recipe.id)}
               >
                 {recipe.name}
