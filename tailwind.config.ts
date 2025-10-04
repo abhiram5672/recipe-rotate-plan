@@ -13,6 +13,14 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'playfair': ['Playfair Display', 'serif'],
+        'poppins': ['Poppins', 'sans-serif'],
+        'dm-serif': ['DM Serif Display', 'serif'],
+        'nunito': ['Nunito', 'sans-serif'],
+        'great-vibes': ['Great Vibes', 'cursive'],
+        'roboto': ['Roboto', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
