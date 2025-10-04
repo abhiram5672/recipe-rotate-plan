@@ -1,6 +1,7 @@
+// Updated: 2025-10-04 - Added cooking time and external URL support
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-// Recipe ingredient with optional cooking time
+// Recipe ingredient interface with cooking time support
 export interface Ingredient {
   id: string;
   name: string;
@@ -9,6 +10,7 @@ export interface Ingredient {
   cookingTime?: number;
 }
 
+// Recipe interface with external links and cooking features
 export interface Recipe {
   id: string;
   name: string;
@@ -62,13 +64,16 @@ const sampleRecipes: Recipe[] = [
     description: 'A classic Italian pasta dish with eggs, cheese, pancetta, and black pepper.',
     baseServings: 4,
     ingredients: [
-      { id: '1', name: 'Spaghetti', quantity: 400, unit: 'g' },
+      { id: '1', name: 'Spaghetti', quantity: 400, unit: 'g', cookingTime: 10 },
       { id: '2', name: 'Eggs', quantity: 4, unit: 'pcs' },
-      { id: '3', name: 'Pancetta', quantity: 200, unit: 'g' },
+      { id: '3', name: 'Pancetta', quantity: 200, unit: 'g', cookingTime: 5 },
       { id: '4', name: 'Parmesan cheese', quantity: 100, unit: 'g' },
       { id: '5', name: 'Black pepper', quantity: 2, unit: 'tsp' },
     ],
     instructions: 'Cook spaghetti according to package directions.\nFry pancetta until crispy.\nMix eggs and cheese.\nCombine hot pasta with pancetta.\nAdd egg mixture off heat, stirring quickly.\nSeason with black pepper and serve.',
+    totalCookingTime: 15,
+    showCookingTime: true,
+    alertsEnabled: false,
   },
   {
     id: '2',
@@ -86,6 +91,9 @@ const sampleRecipes: Recipe[] = [
       { id: '8', name: 'Chocolate chips', quantity: 340, unit: 'g' },
     ],
     instructions: 'Preheat oven to 375°F (190°C).\nCream butter and sugars together.\nBeat in eggs and vanilla.\nMix in flour, baking soda, and salt.\nFold in chocolate chips.\nDrop spoonfuls onto baking sheet.\nBake for 9-11 minutes until golden.\nCool on wire rack.',
+    totalCookingTime: 11,
+    showCookingTime: true,
+    alertsEnabled: false,
   },
 ];
 
