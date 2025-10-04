@@ -1,10 +1,12 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
+// Recipe ingredient with optional cooking time
 export interface Ingredient {
   id: string;
   name: string;
   quantity: number;
   unit: string;
+  cookingTime?: number;
 }
 
 export interface Recipe {
@@ -14,6 +16,10 @@ export interface Recipe {
   baseServings: number;
   ingredients: Ingredient[];
   instructions: string;
+  externalUrl?: string;
+  totalCookingTime?: number;
+  showCookingTime?: boolean;
+  alertsEnabled?: boolean;
 }
 
 export interface MealPlan {

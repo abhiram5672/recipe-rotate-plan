@@ -10,8 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRecipes, Ingredient } from '@/contexts/RecipeContext';
 import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 
-const UNITS = ['g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup', 'pcs', 'oz'];
+const UNITS = ['g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup', 'oz', 'lb', 'pcs', 'slices', 'pinch', 'dash', 'cloves', 'sticks'];
 
 export default function RecipeForm() {
   const { id } = useParams();
@@ -25,12 +26,15 @@ export default function RecipeForm() {
   const [description, setDescription] = useState(existingRecipe?.description || '');
   const [baseServings, setBaseServings] = useState(existingRecipe?.baseServings || 4);
   const [ingredients, setIngredients] = useState<Ingredient[]>(
-    existingRecipe?.ingredients || [{ id: '1', name: '', quantity: 0, unit: 'g' }]
+    existingRecipe?.ingredients || [{ id: '1', name: '', quantity: 0, unit: 'g', cookingTime: 0 }]
   );
   const [instructions, setInstructions] = useState(existingRecipe?.instructions || '');
+  const [externalUrl, setExternalUrl] = useState(existingRecipe?.externalUrl || '');
+  const [showCookingTime, setShowCookingTime] = useState(existingRecipe?.showCookingTime ?? true);
+  const [alertsEnabled, setAlertsEnabled] = useState(existingRecipe?.alertsEnabled ?? false);
 
   const addIngredient = () => {
-    setIngredients([...ingredients, { id: Date.now().toString(), name: '', quantity: 0, unit: 'g' }]);
+    setIngredients([...ingredients, { id: Date.now().toString(), name: '', quantity: 0, unit: 'g', cookingTime: 0 }]);
   };
 
   const removeIngredient = (id: string) => {
@@ -56,12 +60,18 @@ export default function RecipeForm() {
       return;
     }
 
+    const totalCookingTime = ingredients.reduce((sum, ing) => sum + (ing.cookingTime || 0), 0);
+
     const recipe = {
       name,
       description,
       baseServings,
       ingredients,
       instructions,
+      externalUrl,
+      totalCookingTime,
+      showCookingTime,
+      alertsEnabled,
     };
 
     if (isEditing) {
@@ -135,6 +145,20 @@ export default function RecipeForm() {
                   Enter the number of people this recipe serves as written
                 </p>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="externalUrl">External Recipe Link (Optional)</Label>
+                <Input
+                  id="externalUrl"
+                  type="url"
+                  placeholder="https://youtube.com/watch?v=... or any recipe URL"
+                  value={externalUrl}
+                  onChange={(e) => setExternalUrl(e.target.value)}
+                />
+                <p className="text-sm text-muted-foreground">
+                  Add a YouTube video or external recipe link
+                </p>
+              </div>
             </CardContent>
           </Card>
 
@@ -147,15 +171,16 @@ export default function RecipeForm() {
               </Button>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2 text-sm font-medium">
+              <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-2 text-sm font-medium">
                 <div>Ingredient</div>
                 <div className="w-24 text-center">Quantity</div>
                 <div className="w-28">Unit</div>
+                <div className="w-32 text-center">Cook Time (min)</div>
                 <div className="w-10"></div>
               </div>
 
               {ingredients.map((ingredient) => (
-                <div key={ingredient.id} className="grid grid-cols-[1fr_auto_auto_auto] gap-2">
+                <div key={ingredient.id} className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-2">
                   <Input
                     placeholder="e.g. All-purpose flour"
                     value={ingredient.name}
@@ -184,6 +209,14 @@ export default function RecipeForm() {
                       ))}
                     </SelectContent>
                   </Select>
+                  <Input
+                    type="number"
+                    min="0"
+                    className="w-32"
+                    placeholder="0"
+                    value={ingredient.cookingTime || ''}
+                    onChange={(e) => updateIngredient(ingredient.id, 'cookingTime', parseInt(e.target.value) || 0)}
+                  />
                   <Button
                     type="button"
                     variant="ghost"
@@ -213,6 +246,47 @@ export default function RecipeForm() {
               <p className="mt-2 text-sm text-muted-foreground">
                 Write each step on a new line
               </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-accent/20">
+            <CardHeader>
+              <CardTitle>Cooking Time & Alerts</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between rounded-lg border border-border/50 p-4">
+                <div className="space-y-0.5">
+                  <Label htmlFor="showCookingTime" className="text-base">Show Cooking Time</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Display total cooking time on recipe details
+                  </p>
+                </div>
+                <Switch
+                  id="showCookingTime"
+                  checked={showCookingTime}
+                  onCheckedChange={setShowCookingTime}
+                />
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-border/50 p-4">
+                <div className="space-y-0.5">
+                  <Label htmlFor="alertsEnabled" className="text-base">Enable Cooking Alerts</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Get notifications when cooking time for ingredients ends
+                  </p>
+                </div>
+                <Switch
+                  id="alertsEnabled"
+                  checked={alertsEnabled}
+                  onCheckedChange={setAlertsEnabled}
+                />
+              </div>
+
+              <div className="rounded-lg bg-primary/5 p-4">
+                <p className="text-sm font-medium">
+                  Total Cooking Time: {ingredients.reduce((sum, ing) => sum + (ing.cookingTime || 0), 0)} minutes
+                </p>
+              </div>
             </CardContent>
           </Card>
 

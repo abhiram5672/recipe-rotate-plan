@@ -6,6 +6,7 @@ import { useRecipes } from '@/contexts/RecipeContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Index = () => {
   const { recipes } = useRecipes();
@@ -22,17 +23,37 @@ const Index = () => {
 
       <main className="container px-4 py-12 md:px-8">
         {/* Hero Section */}
-        <div className="mb-12 text-center">
-          <div className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-cyber glow-effect">
+        <motion.div 
+          className="mb-12 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.div 
+            className="mb-6 inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-cyber glow-effect"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          >
             <ChefHat className="h-10 w-10 text-white" />
-          </div>
-          <h1 className="mb-4 bg-gradient-cyber bg-clip-text text-4xl font-bold text-transparent glow-text md:text-5xl">
+          </motion.div>
+          <motion.h1 
+            className="mb-4 bg-gradient-cyber bg-clip-text text-4xl font-bold text-transparent glow-text md:text-5xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
             Discover Delicious Recipes
-          </h1>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+          </motion.h1>
+          <motion.p 
+            className="mx-auto max-w-2xl text-lg text-muted-foreground"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
             Create, store, and scale your favorite recipes. Plan your weekly meals with ease.
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Search and Actions */}
         <div className="mx-auto mb-12 flex max-w-3xl flex-col gap-4 sm:flex-row">
@@ -52,13 +73,25 @@ const Index = () => {
 
         {/* Recipe Grid */}
         {filteredRecipes.length === 0 ? (
-          <div className="py-12 text-center">
+          <motion.div 
+            className="py-12 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
             <p className="text-lg text-muted-foreground">No recipes found. Create your first recipe!</p>
-          </div>
+          </motion.div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredRecipes.map(recipe => (
-              <RecipeCard key={recipe.id} recipe={recipe} />
+            {filteredRecipes.map((recipe, index) => (
+              <motion.div
+                key={recipe.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.4 }}
+              >
+                <RecipeCard recipe={recipe} />
+              </motion.div>
             ))}
           </div>
         )}

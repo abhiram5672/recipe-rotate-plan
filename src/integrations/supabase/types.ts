@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       ingredients: {
         Row: {
+          cooking_time: number | null
           id: string
           name: string
           quantity: number
@@ -24,6 +25,7 @@ export type Database = {
           unit: string
         }
         Insert: {
+          cooking_time?: number | null
           id?: string
           name: string
           quantity: number
@@ -32,6 +34,7 @@ export type Database = {
           unit: string
         }
         Update: {
+          cooking_time?: number | null
           id?: string
           name?: string
           quantity?: number
@@ -92,35 +95,47 @@ export type Database = {
       }
       recipes: {
         Row: {
+          alerts_enabled: boolean | null
           base_servings: number
           created_at: string
           description: string | null
+          external_url: string | null
           id: string
           instructions: string | null
           name: string
+          show_cooking_time: boolean | null
           tags: string[] | null
+          total_cooking_time: number | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          alerts_enabled?: boolean | null
           base_servings?: number
           created_at?: string
           description?: string | null
+          external_url?: string | null
           id?: string
           instructions?: string | null
           name: string
+          show_cooking_time?: boolean | null
           tags?: string[] | null
+          total_cooking_time?: number | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          alerts_enabled?: boolean | null
           base_servings?: number
           created_at?: string
           description?: string | null
+          external_url?: string | null
           id?: string
           instructions?: string | null
           name?: string
+          show_cooking_time?: boolean | null
           tags?: string[] | null
+          total_cooking_time?: number | null
           updated_at?: string
           user_id?: string
         }

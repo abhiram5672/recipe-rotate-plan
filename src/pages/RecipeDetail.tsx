@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Users, Trash2, Edit } from 'lucide-react';
+import { ArrowLeft, Users, Trash2, Edit, Clock, ExternalLink, Bell } from 'lucide-react';
 import { Header } from '@/components/Header';
+import { CookingTimer } from '@/components/CookingTimer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -108,6 +109,32 @@ export default function RecipeDetail() {
           </div>
           <h1 className="mb-2 text-3xl font-bold md:text-4xl bg-gradient-cyber bg-clip-text text-transparent">{recipe.name}</h1>
           <p className="text-lg text-muted-foreground">{recipe.description}</p>
+          
+          <div className="mt-4 flex flex-wrap gap-4 items-center">
+            {recipe.showCookingTime && recipe.totalCookingTime && recipe.totalCookingTime > 0 && (
+              <div className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-primary">
+                <Clock className="h-4 w-4" />
+                <span className="text-sm font-medium">{recipe.totalCookingTime} mins</span>
+              </div>
+            )}
+            {recipe.alertsEnabled && (
+              <div className="flex items-center gap-2 rounded-xl bg-accent/10 px-4 py-2 text-accent">
+                <Bell className="h-4 w-4" />
+                <span className="text-sm font-medium">Alerts Enabled</span>
+              </div>
+            )}
+            {recipe.externalUrl && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="hover:scale-105 transition-all"
+                onClick={() => window.open(recipe.externalUrl, '_blank')}
+              >
+                <ExternalLink className="mr-2 h-4 w-4" />
+                View Recipe Video
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
@@ -134,13 +161,29 @@ export default function RecipeDetail() {
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {scaledIngredients.map(ing => (
-                  <div key={ing.id} className="flex justify-between border-b border-primary/20 pb-2">
-                    <span>{ing.name}</span>
-                    <span className="font-medium text-primary">
-                      {ing.quantity.toFixed(2)} {ing.unit}
-                    </span>
+                  <div key={ing.id} className="space-y-2">
+                    <div className="flex justify-between items-center border-b border-primary/20 pb-2">
+                      <div className="flex-1">
+                        <span>{ing.name}</span>
+                        {ing.cookingTime && ing.cookingTime > 0 && (
+                          <span className="ml-2 text-xs text-muted-foreground">
+                            ({ing.cookingTime} min)
+                          </span>
+                        )}
+                      </div>
+                      <span className="font-medium text-primary">
+                        {ing.quantity.toFixed(2)} {ing.unit}
+                      </span>
+                    </div>
+                    {ing.cookingTime && ing.cookingTime > 0 && recipe.alertsEnabled && (
+                      <CookingTimer 
+                        ingredientName={ing.name}
+                        cookingTime={ing.cookingTime}
+                        alertsEnabled={recipe.alertsEnabled}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
