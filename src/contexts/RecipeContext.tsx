@@ -22,6 +22,7 @@ export interface Recipe {
   totalCookingTime?: number;
   showCookingTime?: boolean;
   alertsEnabled?: boolean;
+  imageUrl?: string;
 }
 
 export interface MealPlan {

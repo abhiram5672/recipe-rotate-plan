@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Users, Trash2, Edit, Clock, ExternalLink, Bell } from 'lucide-react';
+import { ArrowLeft, Users, Trash2, Edit, Clock, ExternalLink, Bell, ImageIcon } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { CookingTimer } from '@/components/CookingTimer';
 import { Button } from '@/components/ui/button';
@@ -103,22 +103,36 @@ export default function RecipeDetail() {
         </div>
 
         <div className="mb-8">
-          <div className="mb-6 h-64 rounded-2xl bg-gradient-cyber relative overflow-hidden glow-effect">
-            <div className="absolute inset-0 bg-black/20" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
+          <div className="mb-6 h-80 rounded-2xl bg-gradient-secondary relative overflow-hidden shadow-lg">
+            {recipe.imageUrl ? (
+              <>
+                <img 
+                  src={recipe.imageUrl} 
+                  alt={recipe.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-overlay" />
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                <ImageIcon className="h-24 w-24 text-muted-foreground/20" />
+              </div>
+            )}
+            <div className="absolute bottom-0 left-0 right-0 p-8">
+              <h1 className="mb-2 text-4xl font-bold md:text-5xl text-foreground drop-shadow-lg">{recipe.name}</h1>
+              <p className="text-lg text-foreground/90 drop-shadow-md">{recipe.description}</p>
+            </div>
           </div>
-          <h1 className="mb-2 text-3xl font-bold md:text-4xl bg-gradient-cyber bg-clip-text text-transparent">{recipe.name}</h1>
-          <p className="text-lg text-muted-foreground">{recipe.description}</p>
           
-          <div className="mt-4 flex flex-wrap gap-4 items-center">
+          <div className="mt-4 flex flex-wrap gap-3 items-center">
             {recipe.showCookingTime && recipe.totalCookingTime && recipe.totalCookingTime > 0 && (
-              <div className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-primary">
+              <div className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-primary border border-primary/20">
                 <Clock className="h-4 w-4" />
-                <span className="text-sm font-medium">{recipe.totalCookingTime} mins</span>
+                <span className="text-sm font-medium">{recipe.totalCookingTime} minutes</span>
               </div>
             )}
             {recipe.alertsEnabled && (
-              <div className="flex items-center gap-2 rounded-xl bg-accent/10 px-4 py-2 text-accent">
+              <div className="flex items-center gap-2 rounded-xl bg-accent/10 px-4 py-2 text-accent border border-accent/20">
                 <Bell className="h-4 w-4" />
                 <span className="text-sm font-medium">Alerts Enabled</span>
               </div>
@@ -127,7 +141,6 @@ export default function RecipeDetail() {
               <Button
                 variant="outline"
                 size="sm"
-                className="hover:scale-105 transition-all"
                 onClick={() => window.open(recipe.externalUrl, '_blank')}
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
@@ -138,7 +151,7 @@ export default function RecipeDetail() {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="border-primary/20">
+          <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Ingredients</CardTitle>
@@ -148,7 +161,7 @@ export default function RecipeDetail() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="servings">Adjust servings:</Label>
                 <Input
@@ -161,19 +174,19 @@ export default function RecipeDetail() {
                 />
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {scaledIngredients.map(ing => (
-                  <div key={ing.id} className="space-y-2">
-                    <div className="flex justify-between items-center border-b border-primary/20 pb-2">
+                  <div key={ing.id} className="space-y-3">
+                    <div className="flex justify-between items-center border-b border-border pb-3">
                       <div className="flex-1">
-                        <span>{ing.name}</span>
+                        <span className="font-medium">{ing.name}</span>
                         {ing.cookingTime && ing.cookingTime > 0 && (
                           <span className="ml-2 text-xs text-muted-foreground">
-                            ({ing.cookingTime} min)
+                            ({ing.cookingTime} minutes)
                           </span>
                         )}
                       </div>
-                      <span className="font-medium text-primary">
+                      <span className="font-semibold text-primary">
                         {ing.quantity.toFixed(2)} {ing.unit}
                       </span>
                     </div>
@@ -190,18 +203,18 @@ export default function RecipeDetail() {
             </CardContent>
           </Card>
 
-          <Card className="border-accent/20">
+          <Card>
             <CardHeader>
               <CardTitle>Instructions</CardTitle>
             </CardHeader>
             <CardContent>
-              <ol className="space-y-3">
+              <ol className="space-y-4">
                 {recipe.instructions.split('\n').filter(step => step.trim()).map((step, index) => (
                   <li key={index} className="flex gap-3">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-cyber text-sm font-semibold text-white">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                       {index + 1}
                     </span>
-                    <span className="pt-0.5">{step}</span>
+                    <span className="pt-1 leading-relaxed">{step}</span>
                   </li>
                 ))}
               </ol>

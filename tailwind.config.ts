@@ -71,8 +71,8 @@ export default {
       },
       backgroundImage: {
         'gradient-primary': 'linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)))',
-        'gradient-accent': 'linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-purple)))',
-        'gradient-cyber': 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%)',
+        'gradient-secondary': 'linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--primary-light)))',
+        'gradient-overlay': 'linear-gradient(to top, hsl(var(--background) / 0.95) 0%, hsl(var(--background) / 0.7) 50%, transparent 100%)',
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -11,37 +11,36 @@ All colors MUST be HSL.
     /* Fonts */
     font-family: 'Poppins', sans-serif;
     
-    --background: 220 30% 96%;
-    --foreground: 220 20% 10%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 13%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 0 0% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 0 0% 13%;
 
-    --primary: 195 100% 50%;
-    --primary-foreground: 220 20% 5%;
+    --primary: 14 100% 63%;
+    --primary-foreground: 0 0% 100%;
     
-    --primary-light: 280 90% 65%;
-    --primary-glow: 195 100% 70%;
-    --accent-purple: 280 90% 60%;
+    --primary-light: 14 100% 70%;
+    --primary-glow: 14 100% 75%;
 
-    --secondary: 220 20% 92%;
-    --secondary-foreground: 220 20% 10%;
+    --secondary: 32 100% 75%;
+    --secondary-foreground: 0 0% 13%;
 
-    --muted: 220 15% 90%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 280 90% 60%;
+    --accent: 122 39% 49%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 85%;
-    --input: 220 20% 85%;
-    --ring: 195 100% 50%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 14 100% 63%;
 
     --radius: 1rem;
 
@@ -56,37 +55,36 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 220 30% 8%;
-    --foreground: 220 20% 95%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 100%;
 
-    --card: 220 25% 12%;
-    --card-foreground: 220 20% 95%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 220 25% 12%;
-    --popover-foreground: 220 20% 95%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 195 100% 50%;
+    --primary: 14 100% 63%;
     --primary-foreground: 0 0% 100%;
 
-    --primary-light: 280 90% 65%;
-    --primary-glow: 195 100% 70%;
-    --accent-purple: 280 90% 60%;
+    --primary-light: 14 100% 70%;
+    --primary-glow: 14 100% 75%;
 
-    --secondary: 220 20% 18%;
-    --secondary-foreground: 220 20% 95%;
+    --secondary: 32 100% 75%;
+    --secondary-foreground: 0 0% 13%;
 
-    --muted: 220 20% 18%;
-    --muted-foreground: 220 15% 65%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 280 90% 60%;
+    --accent: 122 39% 49%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 25% 22%;
-    --input: 220 25% 22%;
-    --ring: 195 100% 50%;
+    --border: 0 0% 22%;
+    --input: 0 0% 22%;
+    --ring: 14 100% 63%;
     
     --sidebar-background: 220 30% 10%;
     --sidebar-foreground: 220 20% 90%;
@@ -120,21 +118,25 @@ All colors MUST be HSL.
 
 @layer utilities {
   .glow-effect {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3), 0 0 40px hsl(var(--primary) / 0.1);
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.15);
   }
   
   .glow-text {
-    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+    text-shadow: 0 2px 8px hsl(var(--foreground) / 0.15);
   }
   
   .border-glow {
-    border-color: hsl(var(--primary) / 0.5);
-    box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: 0 2px 12px hsl(var(--primary) / 0.2);
   }
 
   .glass-effect {
-    background: hsl(var(--card) / 0.7);
+    background: hsl(var(--card) / 0.8);
     backdrop-filter: blur(12px);
     border: 1px solid hsl(var(--border) / 0.5);
+  }
+  
+  .image-overlay {
+    background: linear-gradient(to top, hsl(var(--background) / 0.95) 0%, hsl(var(--background) / 0.7) 50%, transparent 100%);
   }
 }

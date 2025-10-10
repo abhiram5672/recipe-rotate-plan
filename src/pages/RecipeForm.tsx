@@ -1,7 +1,7 @@
 // Recipe Form - Create and edit recipes
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Upload, X } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useRecipes, Ingredient } from '@/contexts/RecipeContext';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
+import { supabase } from '@/integrations/supabase/client';
 
 const UNITS = ['g', 'kg', 'ml', 'l', 'tsp', 'tbsp', 'cup', 'oz', 'lb', 'pcs', 'slices', 'pinch', 'dash', 'cloves', 'sticks'];
 
@@ -33,6 +34,58 @@ export default function RecipeForm() {
   const [externalUrl, setExternalUrl] = useState(existingRecipe?.externalUrl || '');
   const [showCookingTime, setShowCookingTime] = useState(existingRecipe?.showCookingTime ?? true);
   const [alertsEnabled, setAlertsEnabled] = useState(existingRecipe?.alertsEnabled ?? false);
+  const [imageUrl, setImageUrl] = useState(existingRecipe?.imageUrl || '');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Image size must be less than 5MB');
+        return;
+      }
+      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type)) {
+        toast.error('Only JPG, PNG, and WEBP images are allowed');
+        return;
+      }
+      setImageFile(file);
+      setImageUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const uploadImage = async (): Promise<string | null> => {
+    if (!imageFile) return imageUrl || null;
+    
+    setIsUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('You must be logged in to upload images');
+        return null;
+      }
+
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('recipe-images')
+        .upload(fileName, imageFile);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('recipe-images')
+        .getPublicUrl(data.path);
+
+      return publicUrl;
+    } catch (error: any) {
+      toast.error(`Failed to upload image: ${error.message}`);
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const addIngredient = () => {
     setIngredients([...ingredients, { id: Date.now().toString(), name: '', quantity: 0, unit: 'g', cookingTime: 0 }]);
@@ -48,7 +101,7 @@ export default function RecipeForm() {
     setIngredients(ingredients.map(ing => (ing.id === id ? { ...ing, [field]: value } : ing)));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!name.trim()) {
@@ -59,6 +112,11 @@ export default function RecipeForm() {
     if (ingredients.some(ing => !ing.name.trim())) {
       toast.error('Please fill in all ingredient names');
       return;
+    }
+
+    const uploadedImageUrl = await uploadImage();
+    if (imageFile && !uploadedImageUrl) {
+      return; // Upload failed
     }
 
     const totalCookingTime = ingredients.reduce((sum, ing) => sum + (ing.cookingTime || 0), 0);
@@ -73,6 +131,7 @@ export default function RecipeForm() {
       totalCookingTime,
       showCookingTime,
       alertsEnabled,
+      imageUrl: uploadedImageUrl || imageUrl,
     };
 
     if (isEditing) {
@@ -100,16 +159,16 @@ export default function RecipeForm() {
           Back to Recipes
         </Button>
 
-        <h1 className="mb-8 bg-gradient-cyber bg-clip-text text-3xl font-bold text-transparent glow-text md:text-4xl">
+        <h1 className="mb-8 text-3xl font-bold md:text-4xl">
           {isEditing ? 'Edit Recipe' : 'New Recipe'}
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <Card className="border-primary/20">
+          <Card>
             <CardHeader>
               <CardTitle>Recipe Details</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="name">Recipe Name</Label>
                 <Input
@@ -148,6 +207,52 @@ export default function RecipeForm() {
               </div>
 
               <div className="space-y-2">
+                <Label>Recipe Image</Label>
+                <div className="space-y-4">
+                  {imageUrl && (
+                    <div className="relative w-full h-56 rounded-lg overflow-hidden border border-border">
+                      <img 
+                        src={imageUrl} 
+                        alt="Recipe preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={() => {
+                          setImageUrl('');
+                          setImageFile(null);
+                        }}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-4">
+                    <Input
+                      id="image"
+                      type="file"
+                      accept="image/jpeg,image/jpg,image/png,image/webp"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                    <Label
+                      htmlFor="image"
+                      className="cursor-pointer flex items-center gap-2 px-4 py-2 rounded-lg border border-input bg-background hover:bg-muted transition-colors"
+                    >
+                      <Upload className="h-4 w-4" />
+                      {imageUrl ? 'Change Image' : 'Upload Image'}
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      JPG, PNG, or WEBP (max 5MB)
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="externalUrl">External Recipe Link (Optional)</Label>
                 <Input
                   id="externalUrl"
@@ -163,10 +268,10 @@ export default function RecipeForm() {
             </CardContent>
           </Card>
 
-          <Card className="border-accent/20">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Ingredients</CardTitle>
-              <Button type="button" size="sm" onClick={addIngredient} className="bg-gradient-cyber glow-effect hover:scale-105">
+              <Button type="button" size="sm" onClick={addIngredient}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add
               </Button>
@@ -233,7 +338,7 @@ export default function RecipeForm() {
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20">
+          <Card>
             <CardHeader>
               <CardTitle>Instructions</CardTitle>
             </CardHeader>
@@ -250,12 +355,12 @@ export default function RecipeForm() {
             </CardContent>
           </Card>
 
-          <Card className="border-accent/20">
+          <Card>
             <CardHeader>
               <CardTitle>Cooking Time & Alerts</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between rounded-lg border border-border/50 p-4">
+              <div className="flex items-center justify-between rounded-lg border border-border p-4">
                 <div className="space-y-0.5">
                   <Label htmlFor="showCookingTime" className="text-base">Show Cooking Time</Label>
                   <p className="text-sm text-muted-foreground">
@@ -269,7 +374,7 @@ export default function RecipeForm() {
                 />
               </div>
 
-              <div className="flex items-center justify-between rounded-lg border border-border/50 p-4">
+              <div className="flex items-center justify-between rounded-lg border border-border p-4">
                 <div className="space-y-0.5">
                   <Label htmlFor="alertsEnabled" className="text-base">Enable Cooking Alerts</Label>
                   <p className="text-sm text-muted-foreground">
@@ -283,7 +388,7 @@ export default function RecipeForm() {
                 />
               </div>
 
-              <div className="rounded-lg bg-primary/5 p-4">
+              <div className="rounded-lg bg-muted p-4">
                 <p className="text-sm font-medium">
                   Total Cooking Time: {ingredients.reduce((sum, ing) => sum + (ing.cookingTime || 0), 0)} minutes
                 </p>
@@ -295,8 +400,8 @@ export default function RecipeForm() {
             <Button type="button" variant="outline" onClick={() => navigate('/')} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" className="flex-1 bg-gradient-cyber hover:opacity-90 hover:scale-105 glow-effect">
-              {isEditing ? 'Update Recipe' : 'Save Recipe'}
+            <Button type="submit" className="flex-1" disabled={isUploading}>
+              {isUploading ? 'Uploading...' : isEditing ? 'Update Recipe' : 'Save Recipe'}
             </Button>
           </div>
         </form>
