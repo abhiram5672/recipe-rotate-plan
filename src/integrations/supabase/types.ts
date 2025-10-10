@@ -101,6 +101,7 @@ export type Database = {
           description: string | null
           external_url: string | null
           id: string
+          image_url: string | null
           instructions: string | null
           name: string
           show_cooking_time: boolean | null
@@ -116,6 +117,7 @@ export type Database = {
           description?: string | null
           external_url?: string | null
           id?: string
+          image_url?: string | null
           instructions?: string | null
           name: string
           show_cooking_time?: boolean | null
@@ -131,6 +133,7 @@ export type Database = {
           description?: string | null
           external_url?: string | null
           id?: string
+          image_url?: string | null
           instructions?: string | null
           name?: string
           show_cooking_time?: boolean | null
